@@ -1,0 +1,8 @@
+node_modules/
+dist/
+test/
+public/
+
+.env.production
+.env.development
+.env

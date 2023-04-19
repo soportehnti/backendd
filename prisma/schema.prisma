@@ -1,0 +1,343 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL") 
+}
+
+// generator zod { provider = "prisma-zod-generator" }
+
+enum UserType {
+    admin
+    agent
+    user
+}
+
+model User {
+    id          String   @id @default(cuid())
+    created_at  DateTime @default(now())
+    updated_at  DateTime @default(now()) @updatedAt
+    created_by  String   @default("system")
+    disabled_by String?
+
+    email        String  @unique
+    username     String? @unique
+    password     String?
+    old_password String?
+
+    first_name   String?
+    last_name    String?
+    phone_number String?  @unique
+    is_enabled   Boolean  @default(true)
+    is_verified  Boolean  @default(false)
+    type         UserType @default(user)
+    bio          String?
+    avatar_url   String?
+
+    client_id String?
+    client    Client? @relation(fields: [client_id], references: [id])
+    role_id   String?
+    Role      Role?   @relation(fields: [role_id], references: [id])
+
+    roles_created     Role[]    @relation("RoleCreatedBy")
+    tickets_assigned  Ticket[]  @relation("TicketsAssigned")
+    tickets_requested Ticket[]  @relation("TicketsRequested")
+    files_created     File[]    @relation("FilesCreatedBy")
+    comments_created  Comment[]
+    reports_created   Report[]
+}
+
+model Client {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name         String
+    address      String
+    phone_number String?
+    is_enabled   Boolean @default(true)
+    email        String?
+
+    city_id String
+    City    City   @relation(fields: [city_id], references: [id])
+
+    employees         User[]
+    tickets_requested Ticket[]
+    reports_generated Report[]
+}
+
+model Role {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+
+    name        String
+    description String?
+
+    created_by                  String
+    User                        User?       @relation(fields: [created_by], references: [id], name: "RoleCreatedBy")
+    user_permission_id          String?
+    UserPermission              Permission? @relation(fields: [user_permission_id], references: [id], name: "UserPermission")
+    role_permission_id          String?
+    RolePermission              Permission? @relation(fields: [role_permission_id], references: [id], name: "RolePermission")
+    client_permission_id        String?
+    ClientPermission            Permission? @relation(fields: [client_permission_id], references: [id], name: "ClientPermission")
+    country_permission_id       String?
+    CountryPermission           Permission? @relation(fields: [country_permission_id], references: [id], name: "CountryPermission")
+    state_permission_id         String?
+    StatePermission             Permission? @relation(fields: [state_permission_id], references: [id], name: "StatePermission")
+    city_permission_id          String?
+    CityPermission              Permission? @relation(fields: [city_permission_id], references: [id], name: "CityPermission")
+    area_permission_id          String?
+    AreaPermission              Permission? @relation(fields: [area_permission_id], references: [id], name: "AreaPermission")
+    ticket_permission_id        String?
+    TicketPermission            Permission? @relation(fields: [ticket_permission_id], references: [id], name: "TicketPermission")
+    status_permission_id        String?
+    StatusPermission            Permission? @relation(fields: [status_permission_id], references: [id], name: "StatusPermission")
+    priority_permission_id      String?
+    PriorityPermission          Permission? @relation(fields: [priority_permission_id], references: [id], name: "PriorityPermission")
+    incident_type_permission_id String?
+    IncidentTypePermission      Permission? @relation(fields: [incident_type_permission_id], references: [id], name: "IncidentTypePermission")
+    comment_permission_id       String?
+    CommentPermission           Permission? @relation(fields: [comment_permission_id], references: [id], name: "CommentPermission")
+    report_permission_id        String?
+    ReportPermission            Permission? @relation(fields: [report_permission_id], references: [id], name: "ReportPermission")
+    file_permission_id          String?
+    FilePermission              Permission? @relation(fields: [file_permission_id], references: [id], name: "FilePermission")
+
+    users User[]
+}
+
+model Permission {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name        String
+    description String?
+    read        Boolean @default(false)
+    write       Boolean @default(false)
+    update      Boolean @default(false)
+    delete      Boolean @default(false)
+
+    user_permission          Role[] @relation("UserPermission")
+    client_permission        Role[] @relation("ClientPermission")
+    role_permission          Role[] @relation("RolePermission")
+    country_permission       Role[] @relation("CountryPermission")
+    state_permission         Role[] @relation("StatePermission")
+    city_permission          Role[] @relation("CityPermission")
+    area_permission          Role[] @relation("AreaPermission")
+    ticket_permission        Role[] @relation("TicketPermission")
+    status_permission        Role[] @relation("StatusPermission")
+    priority_permission      Role[] @relation("PriorityPermission")
+    incident_type_permission Role[] @relation("IncidentTypePermission")
+    comment_permission       Role[] @relation("CommentPermission")
+    report_permission        Role[] @relation("ReportPermission")
+    file_permission          Role[] @relation("FilePermission")
+}
+
+model Country {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name                 String
+    description          String?
+    phone_code           String?
+    contact_phone_number String?
+    is_enabled           Boolean @default(true)
+
+    states State[]
+
+    @@unique([name, phone_code])
+}
+
+model State {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name        String
+    description String?
+
+    country_id String
+    Country    Country @relation(fields: [country_id], references: [id])
+
+    cities City[]
+
+    @@unique([name, country_id])
+}
+
+model City {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name        String
+    description String?
+
+    state_id String
+    State    State   @relation(fields: [state_id], references: [id])
+    area_id  String?
+    Area     Area?   @relation(fields: [area_id], references: [id])
+
+    clients Client[]
+
+    @@unique([name, state_id])
+}
+
+model Area {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name        String
+    description String?
+
+    cities City[]
+
+    @@unique([name])
+}
+
+model Ticket {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+    is_enabled Boolean  @default(true)
+
+    subject     String
+    description String
+    device      String?
+    solution    String?
+
+    file_url         String?
+    // File             File?         @relation(fields: [file_url], references: [url])
+    client_id        String
+    Client           Client        @relation(fields: [client_id], references: [id])
+    requestor_id     String
+    Requestor        User          @relation(fields: [requestor_id], references: [id], name: "TicketsRequested")
+    assigned_to      String?
+    Agent            User?         @relation(fields: [assigned_to], references: [id], name: "TicketsAssigned")
+    status_id        String?
+    Status           Status?       @relation(fields: [status_id], references: [id])
+    priority_id      String?
+    Priority         Priority?     @relation(fields: [priority_id], references: [id])
+    incident_type_id String?
+    IncidentType     IncidentType? @relation(fields: [incident_type_id], references: [id])
+
+    comments Comment[]
+}
+
+model Status {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name        String
+    description String?
+
+    tickets Ticket[]
+
+    @@unique([name])
+}
+
+model Priority {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name        String
+    description String?
+
+    tickets Ticket[]
+
+    @@unique([name])
+}
+
+model IncidentType {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+    created_by String   @default("system")
+
+    name        String
+    description String?
+
+    tickets Ticket[]
+
+    @@unique([name])
+}
+
+model Comment {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+
+    text String
+
+    ticket_id String
+    Ticket    Ticket @relation(fields: [ticket_id], references: [id])
+
+    author_id String
+    User      User   @relation(fields: [author_id], references: [id])
+}
+
+enum Format {
+    html
+    pdf
+    png
+}
+
+enum ReportType {
+    general
+    tickets
+    clients
+    users
+}
+
+model Report {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+
+    name      String     @unique
+    format    Format     @default(html)
+    date_from DateTime   @default(now())
+    date_to   DateTime   @default(now())
+    type      ReportType @default(general)
+    sent_to   String?
+    file_url  String?
+
+    created_by   String
+    User         User    @relation(fields: [created_by], references: [id])
+    generated_to String?
+    Client       Client? @relation(fields: [generated_to], references: [id])
+}
+
+model File {
+    id         String   @id @default(cuid())
+    created_at DateTime @default(now())
+    updated_at DateTime @default(now()) @updatedAt
+
+    name String @unique
+    type String
+    size Int?
+    url  String
+
+    created_by String
+    User       User?  @relation(fields: [created_by], references: [id], name: "FilesCreatedBy")
+}

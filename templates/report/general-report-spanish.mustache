@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETC LATAM — Report {{id}}</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 0.9em;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-container {
+            width: 800px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            height: 100px;
+        }
+
+        .emit-style {
+            font-size: 1em;
+            margin-top: 5rem;
+            font-weight: bold;
+        }
+
+        .emit-style i {
+            font-weight: lighter;
+            font-size: 0.9rem;
+        }
+
+        .emit-id-report {
+            font-size: 1em;
+            margin-top: 5rem;
+            font-weight: bolder;
+        }
+
+        .emit-id-report i {
+            font-weight: lighter;
+            font-size: 1rem;
+        }
+
+        .container-title-emit {
+            justify-content: space-between;
+        }
+
+        .title {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .img-logo {
+            width: 130px;
+            height: auto;
+        }
+
+        .container-body {
+            padding: 1rem;
+            flex: 1;
+            height: 500px;
+        }
+
+        .container-table {
+            margin-top: 1rem;
+        }
+
+        .table-data-tickets {
+            background: rgba(211, 211, 211, 0.171);
+            width: 100%;
+        }
+
+        .title-table {
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .table-data-tickets tbody tr {
+            text-align: center;
+
+        }
+
+        .separator-table {
+            border-color: rgba(241, 241, 241, 0.195);
+        }
+
+        h2,
+        .title-description,
+        .title-subject,
+        .title-device {
+            font-size: 1.2rem;
+        }
+
+        .container-dates {
+            margin-top: 1rem;
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .container-descripcion {
+            margin-bottom: 2rem;
+        }
+
+        .description-paragraph,
+        .subject-paragraph,
+        .device-number {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            text-align: justify;
+        }
+
+        .container-device {
+            display: flex;
+            align-items: end;
+            justify-content: end;
+        }
+
+        .title-device {
+            margin-right: 0.5rem;
+        }
+
+        .device-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .container-footer {
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+
+        }
+
+        .container-footer div {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-container">
+        <header>
+            <div class="container-title-emit">
+                <h1 class="title">ETC LATAM</h1>
+                <span class="emit-style">Emitido: <i>{{created_at}}</i></span>
+                <br />
+                <span class="emit-id-report">Id del Reporte: <i>{{id}}</i></span>
+            </div>
+            <img class="img-logo" src="http://localhost:3000/public/assets/etc-latam-logo.png" alt="etc latam logo">
+        </header>
+
+        <section class="container-body">
+            <div class="container-descripcion">
+                <span class="title-description">Detalles de Reporte</span>
+                <div class="container-dates">
+                    <span>Fecha Desde: {{date_from}}</span>
+                    <span>Fecha Hasta: {{date_to}}</span>
+                </div>
+
+                <div class="container-table">
+                    <span class="title-table">Tickets</span>
+                    <hr class="separator-table" />
+                    <table class="table-data-tickets">
+                        <thead>
+                            <tr>
+                                <th scope="col">Total Generados</th>
+                                <th scope="col">Total Atrasados</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th>5</th>
+                                <th>2</th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="container-table">
+                    <span class="title-table">Clientes</span>
+                    <hr class="separator-table" />
+                    <table class="table-data-tickets">
+                        <thead>
+                            <tr>
+                                <th scope="col">Total Creados</th>
+                                <th scope="col">Total Desabilidatos</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th>5</th>
+                                <th>2</th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="container-table">
+                    <span class="title-table">Usuarios</span>
+                    <hr class="separator-table" />
+                    <table class="table-data-tickets">
+                        <thead>
+                            <tr>
+                                <th scope="col">Total Creados</th>
+                                <th scope="col">Total Deshabilidatos</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th>5</th>
+                                <th>2</th>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </section>
+
+        <footer class="container-footer">
+            <div>
+                <div>
+                    <span>Creado por:</span>
+                    <span>{{created_by}}</span>
+                </div>
+                <div>
+                    <span>Generado para:</span>
+                    <span>{{generated_to}}</span>
+                </div>
+            </div>
+            <div>
+                <span>Enviado a:</span>
+                <span><strong>{{sent_to}}</strong></span>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>
